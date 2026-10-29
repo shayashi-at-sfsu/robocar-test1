@@ -24,7 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "motor.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,7 +58,19 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+extern int __io_putchar(int ch)
+{
+    uint8_t c = (uint8_t)ch;
 
+    HAL_UART_Transmit(
+        &huart2,
+        &c,
+        1,
+        HAL_MAX_DELAY
+    );
+
+    return ch;
+}
 /* USER CODE END 0 */
 
 /**
@@ -92,7 +105,7 @@ int main(void)
   MX_TIM2_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  Motor_Init();
   /* USER CODE END 2 */
 
   /* Initialize USER push-button, will be used to trigger an interrupt each time it's pressed.*/
@@ -102,7 +115,29 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	printf("Forward\r\n");
+	Motor_Forward(40);
+	HAL_Delay(1000);
+	Motor_Stop();
+	HAL_Delay(1000);
 
+	printf("Backward\r\n");
+	Motor_Backward(40);
+	HAL_Delay(1000);
+	Motor_Stop();
+	HAL_Delay(1000);
+
+	printf("Left\r\n");
+	Motor_Left(40);
+	HAL_Delay(700);
+	Motor_Stop();
+	HAL_Delay(1000);
+
+	printf("Right\r\n");
+	Motor_Right(40);
+	HAL_Delay(700);
+	Motor_Stop();
+	HAL_Delay(2000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
