@@ -4,14 +4,14 @@
 #define IN1_PORT GPIOB
 #define IN1_PIN  GPIO_PIN_0
 
-#define IN2_PORT GPIOB
-#define IN2_PIN  GPIO_PIN_1
+#define IN2_PORT GPIOC
+#define IN2_PIN  GPIO_PIN_0
 
-#define IN3_PORT GPIOB
-#define IN3_PIN  GPIO_PIN_2
+#define IN3_PORT GPIOC
+#define IN3_PIN  GPIO_PIN_1
 
-#define IN4_PORT GPIOB
-#define IN4_PIN  GPIO_PIN_10
+#define IN4_PORT GPIOA
+#define IN4_PIN  GPIO_PIN_4
 
 static void Motor_SetSpeed(uint8_t left, uint8_t right)
 {
