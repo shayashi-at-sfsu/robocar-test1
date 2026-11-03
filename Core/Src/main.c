@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -25,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "motor.h"
+#include "rc_lora.h"
 #include <stdio.h>
 /* USER CODE END Includes */
 
@@ -104,8 +106,10 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   MX_USART2_UART_Init();
+  MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
   Motor_Init();
+  RC_LoRa_Init();
   /* USER CODE END 2 */
 
   /* Initialize USER push-button, will be used to trigger an interrupt each time it's pressed.*/
@@ -115,7 +119,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	printf("Forward\r\n");
+	    RC_LoRa_Process();
+
+/*	printf("Forward\r\n");
 	Motor_Forward(40);
 	HAL_Delay(1000);
 	Motor_Stop();
@@ -137,7 +143,7 @@ int main(void)
 	Motor_Right(40);
 	HAL_Delay(700);
 	Motor_Stop();
-	HAL_Delay(2000);
+	HAL_Delay(2000);*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

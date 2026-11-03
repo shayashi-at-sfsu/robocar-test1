@@ -1,0 +1,10 @@
+../Core/Src/sx1276.c:17:13:select_radio	8	static
+../Core/Src/sx1276.c:18:13:deselect_radio	8	static
+../Core/Src/sx1276.c:19:16:rd	32	static
+../Core/Src/sx1276.c:20:13:wr	24	static
+../Core/Src/sx1276.c:21:13:burst_wr	24	static
+../Core/Src/sx1276.c:22:13:burst_rd	24	static
+../Core/Src/sx1276.c:23:5:SX1276_InitPingPong	8	static
+../Core/Src/sx1276.c:38:5:SX1276_SendPacket	32	static
+../Core/Src/sx1276.c:47:6:SX1276_StartRx	8	static
+../Core/Src/sx1276.c:48:5:SX1276_PollPacket	24	static

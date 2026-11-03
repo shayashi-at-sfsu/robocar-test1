@@ -1,0 +1,6 @@
+../Core/Src/rc_lora.c:21:16:crc8	24	static
+../Core/Src/rc_lora.c:30:12:clamp	24	static
+../Core/Src/rc_lora.c:31:13:apply_motor	24	static
+../Core/Src/rc_lora.c:44:6:RC_SetCommand	16	static
+../Core/Src/rc_lora.c:49:6:RC_LoRa_Init	8	static
+../Core/Src/rc_lora.c:61:6:RC_LoRa_Process	40	static
