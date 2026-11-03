@@ -63,8 +63,8 @@ void Motor_Forward(uint8_t speed)
     Motor_SetSpeed(0, 0);
 
     Motor_SetDirection(
-        GPIO_PIN_SET, GPIO_PIN_RESET,
-        GPIO_PIN_SET, GPIO_PIN_RESET);
+        GPIO_PIN_SET,   GPIO_PIN_RESET,  // Right forward
+        GPIO_PIN_RESET, GPIO_PIN_SET);  // Left forward
 
     Motor_SetSpeed(speed, speed);
 }
@@ -74,8 +74,8 @@ void Motor_Backward(uint8_t speed)
     Motor_SetSpeed(0, 0);
 
     Motor_SetDirection(
-        GPIO_PIN_RESET, GPIO_PIN_SET,
-        GPIO_PIN_RESET, GPIO_PIN_SET);
+        GPIO_PIN_RESET, GPIO_PIN_SET,   // Right backward
+        GPIO_PIN_SET,   GPIO_PIN_RESET);// Left backward
 
     Motor_SetSpeed(speed, speed);
 }
@@ -85,8 +85,8 @@ void Motor_Left(uint8_t speed)
     Motor_SetSpeed(0, 0);
 
     Motor_SetDirection(
-        GPIO_PIN_RESET, GPIO_PIN_SET,
-        GPIO_PIN_SET, GPIO_PIN_RESET);
+        GPIO_PIN_RESET, GPIO_PIN_SET,   // Right forward
+        GPIO_PIN_RESET, GPIO_PIN_SET);  // Left backward
 
     Motor_SetSpeed(speed, speed);
 }
@@ -96,8 +96,8 @@ void Motor_Right(uint8_t speed)
     Motor_SetSpeed(0, 0);
 
     Motor_SetDirection(
-        GPIO_PIN_SET, GPIO_PIN_RESET,
-        GPIO_PIN_RESET, GPIO_PIN_SET);
+        GPIO_PIN_SET, GPIO_PIN_RESET,   // Right backward
+        GPIO_PIN_SET, GPIO_PIN_RESET);  // Left forward
 
     Motor_SetSpeed(speed, speed);
 }
