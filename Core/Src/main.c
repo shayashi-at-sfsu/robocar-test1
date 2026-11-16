@@ -115,7 +115,6 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 #if RC_CONTROLLER
-  printf("Joystick\r\n");
   if (Joystick_Init() != HAL_OK)
   {
       Error_Handler();

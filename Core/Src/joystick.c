@@ -56,28 +56,22 @@ HAL_StatusTypeDef Joystick_Init(void)
     {
         printf("ADC calibration failed: %d\r\n", status);
         return status;
-    } else printf("ADC calibration passed: %d\r\n", status);
+    }
 
     status = HAL_ADC_Start_DMA(
         &hadc1,
         (uint32_t *)adc_buffer,
         2);
 
-    if (status != HAL_OK)
+    if (status == HAL_OK)
     {
+        __HAL_DMA_DISABLE_IT(
+            hadc1.DMA_Handle,
+            DMA_IT_HT);
+    } else {
         printf("ADC DMA start failed: %d\r\n", status);
-
-        printf("ADC state: 0x%08lX\r\n",
-               (unsigned long)HAL_ADC_GetState(&hadc1));
-
-        printf("ADC error: 0x%08lX\r\n",
-               (unsigned long)HAL_ADC_GetError(&hadc1));
-
-        printf("DMA handle: %p\r\n",
-               (void *)hadc1.DMA_Handle);
-
         return status;
-    } else printf("ADC DMA start passed: %d\r\n", status);
+    }
 
     return status;
 }
