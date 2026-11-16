@@ -48,7 +48,7 @@ void RC_SetCommand(int8_t throttle,int8_t steering)
 }
 void RC_LoRa_Init(void)
 {
-    if(SX1276_InitPingPong()!=0) Error_Handler();
+    if(SX1276_Init()!=0) Error_Handler();
     seq=0;seen_seq=0;link_active=0;
     last_tx_ms=HAL_GetTick();last_valid_ms=HAL_GetTick();
 #if RC_CONTROLLER

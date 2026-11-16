@@ -18,6 +18,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
+#include "dma.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -27,6 +29,7 @@
 /* USER CODE BEGIN Includes */
 #include "motor.h"
 #include "rc_lora.h"
+#include "joystick.h"
 #include <stdio.h>
 /* USER CODE END Includes */
 
@@ -104,12 +107,35 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_TIM2_Init();
   MX_USART2_UART_Init();
   MX_SPI2_Init();
+  MX_ADC1_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
+#if RC_CONTROLLER
+  printf("Joystick\r\n");
+  if (Joystick_Init() != HAL_OK)
+  {
+      Error_Handler();
+  }
+
+  printf("Joystick initialized\r\n");
+
+  if (HAL_TIM_Base_Start(&htim6) != HAL_OK)
+  {
+      printf("TIM6 start failed\r\n");
+      Error_Handler();
+  }
+
+  printf("TIM6 started\r\n");
+#else
   Motor_Init();
+#endif
+
   RC_LoRa_Init();
+
   /* USER CODE END 2 */
 
   /* Initialize USER push-button, will be used to trigger an interrupt each time it's pressed.*/
@@ -117,33 +143,35 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+#if RC_CONTROLLER
+  Joystick_Data_t joystick;
+  uint32_t lastPrint = 0;
+  HAL_StatusTypeDef status;
+
   while (1)
   {
-	    RC_LoRa_Process();
+	    printf("Reading ADC...\r\n");
 
-/*	printf("Forward\r\n");
-	Motor_Forward(40);
-	HAL_Delay(1000);
-	Motor_Stop();
-	HAL_Delay(1000);
+	    status = Joystick_Read(&joystick);
 
-	printf("Backward\r\n");
-	Motor_Backward(40);
-	HAL_Delay(1000);
-	Motor_Stop();
-	HAL_Delay(1000);
+	    if (status == HAL_OK)
+	    {
+	        printf("X=%u Y=%u\r\n",
+	               joystick.x_raw,
+	               joystick.y_raw);
+	    }
+	    else
+	    {
+	        printf("Joystick_Read FAILED: %d\r\n", status);
+	        printf("ADC Error: 0x%08lX\r\n",
+	               (unsigned long)HAL_ADC_GetError(&hadc1));
+	    }
+#else
+  while (1)
+  {
+	  RC_LoRa_Process();
+#endif
 
-	printf("Left\r\n");
-	Motor_Left(40);
-	HAL_Delay(700);
-	Motor_Stop();
-	HAL_Delay(1000);
-
-	printf("Right\r\n");
-	Motor_Right(40);
-	HAL_Delay(700);
-	Motor_Stop();
-	HAL_Delay(2000);*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

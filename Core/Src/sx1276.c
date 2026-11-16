@@ -20,7 +20,7 @@ static uint8_t rd(uint8_t reg){uint8_t tx[2]={reg&0x7f,0},rx[2]={0};select_radio
 static void wr(uint8_t reg,uint8_t val){uint8_t b[2]={reg|0x80,val};select_radio();HAL_SPI_Transmit(&hspi2,b,2,100);deselect_radio();}
 static void burst_wr(const uint8_t *data,uint8_t n){uint8_t a=0x80|FIFO;select_radio();HAL_SPI_Transmit(&hspi2,&a,1,100);HAL_SPI_Transmit(&hspi2,(uint8_t*)data,n,100);deselect_radio();}
 static void burst_rd(uint8_t *data,uint8_t n){uint8_t a=FIFO;select_radio();HAL_SPI_Transmit(&hspi2,&a,1,100);HAL_SPI_Receive(&hspi2,data,n,100);deselect_radio();}
-int SX1276_InitPingPong(void){
+int SX1276_Init(void){
  deselect_radio();HAL_GPIO_WritePin(RST_PORT,RST_PIN,GPIO_PIN_RESET);HAL_Delay(10);HAL_GPIO_WritePin(RST_PORT,RST_PIN,GPIO_PIN_SET);HAL_Delay(20);
  if(rd(0x42)!=0x12)return -1;
  wr(OPMODE,LORA);HAL_Delay(10);wr(OPMODE,LORA|STDBY);

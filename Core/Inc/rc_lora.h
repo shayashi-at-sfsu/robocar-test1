@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define RC_CONTROLLER 0 /* 1=controller, 0=car */
+#define RC_CONTROLLER 1 /* 1=controller, 0=car */
 #define RC_SEND_PERIOD_MS 100U
 #define RC_FAILSAFE_MS 400U
 

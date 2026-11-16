@@ -1,6 +1,0 @@
-../Core/Src/rc_lora.c:21:16:crc8	4
-../Core/Src/rc_lora.c:30:12:clamp	2
-../Core/Src/rc_lora.c:31:13:apply_motor	15
-../Core/Src/rc_lora.c:44:6:RC_SetCommand	1
-../Core/Src/rc_lora.c:49:6:RC_LoRa_Init	2
-../Core/Src/rc_lora.c:61:6:RC_LoRa_Process	14
