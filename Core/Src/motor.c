@@ -58,46 +58,45 @@ void Motor_Stop(void)
         GPIO_PIN_RESET, GPIO_PIN_RESET);
 }
 
-void Motor_Forward(uint8_t speed)
+static uint8_t Motor_MapPWM(int16_t command)
 {
-    Motor_SetSpeed(0, 0);
+    uint16_t magnitude =
+        (command < 0) ? -command : command;
 
-    Motor_SetDirection(
-        GPIO_PIN_SET,   GPIO_PIN_RESET,  // Right forward
-        GPIO_PIN_RESET, GPIO_PIN_SET);  // Left forward
+    if (magnitude == 0)
+        return 0;
 
-    Motor_SetSpeed(speed, speed);
+    if (magnitude > 100)
+        magnitude = 100;
+
+    /* 40% minimum starting duty cycle */
+    return 40U + (uint8_t)((magnitude * 60U) / 100U);
 }
 
-void Motor_Backward(uint8_t speed)
+void Motor_Drive(int8_t left, int8_t right)
 {
+    uint8_t leftPWM = Motor_MapPWM(left);
+    uint8_t rightPWM = Motor_MapPWM(right);
+
+    /* Disable both bridges before changing direction. */
     Motor_SetSpeed(0, 0);
 
-    Motor_SetDirection(
-        GPIO_PIN_RESET, GPIO_PIN_SET,   // Right backward
-        GPIO_PIN_SET,   GPIO_PIN_RESET);// Left backward
-
-    Motor_SetSpeed(speed, speed);
-}
-
-void Motor_Left(uint8_t speed)
-{
-    Motor_SetSpeed(0, 0);
+    /*
+     * Confirmed physical polarity:
+     * Right forward: IN1=1, IN2=0
+     * Left forward:  IN3=0, IN4=1
+     */
 
     Motor_SetDirection(
-        GPIO_PIN_RESET, GPIO_PIN_SET,   // Right forward
-        GPIO_PIN_RESET, GPIO_PIN_SET);  // Left backward
+        right > 0 ? GPIO_PIN_SET   : GPIO_PIN_RESET,
+        right < 0 ? GPIO_PIN_SET   : GPIO_PIN_RESET,
+        left  < 0 ? GPIO_PIN_SET   : GPIO_PIN_RESET,
+        left  > 0 ? GPIO_PIN_SET   : GPIO_PIN_RESET
+    );
 
-    Motor_SetSpeed(speed, speed);
-}
-
-void Motor_Right(uint8_t speed)
-{
-    Motor_SetSpeed(0, 0);
-
-    Motor_SetDirection(
-        GPIO_PIN_SET, GPIO_PIN_RESET,   // Right backward
-        GPIO_PIN_SET, GPIO_PIN_RESET);  // Left forward
-
-    Motor_SetSpeed(speed, speed);
+    /*
+     * Existing Motor_SetSpeed() arguments:
+     * CH1 = right wheels, CH2 = left wheels.
+     */
+    Motor_SetSpeed(rightPWM, leftPWM);
 }

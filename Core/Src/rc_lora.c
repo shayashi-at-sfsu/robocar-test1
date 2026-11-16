@@ -8,7 +8,7 @@
 #define RC_MAGIC1 0x43U
 #define RC_VERSION 1U
 #define RC_TX_TIMEOUT_MS 100U
-#define RC_MAX_DUTY 40 /* wheels-up test limit */
+#define RC_MAX_DUTY 60 /* wheels-up test limit */
 
 static uint8_t tx[12], rx[12];
 static uint16_t seq;
@@ -28,18 +28,17 @@ static uint8_t crc8(const uint8_t *p, uint8_t n)
     return c;
 }
 static int clamp(int v,int lo,int hi) {return v<lo?lo:(v>hi?hi:v);}
-static void apply_motor(int throttle,int steering)
+static void apply_motor(int throttle, int steering)
 {
-    int left=clamp(throttle+steering,-RC_MAX_DUTY,RC_MAX_DUTY);
-    int right=clamp(throttle-steering,-RC_MAX_DUTY,RC_MAX_DUTY);
-    /* Initial version supports symmetric forward/back/turn commands only.
-       Reject mixed differential values until a signed dual-motor API is added. */
-    if(left==0 && right==0) Motor_Stop();
-    else if(left>0 && right>0) Motor_Forward((uint8_t)((left<right)?left:right));
-    else if(left<0 && right<0) Motor_Backward((uint8_t)((-left<-right)?-left:-right));
-    else if(left<0 && right>0) Motor_Left((uint8_t)((-left<right)?-left:right));
-    else if(left>0 && right<0) Motor_Right((uint8_t)((left<-right)?left:-right));
-    else Motor_Stop(); /* fail-safe on unsupported differential combinations */
+    /* Differential steering */
+    int left  = clamp(throttle - steering,
+                      -RC_MAX_DUTY, RC_MAX_DUTY);
+
+    int right = clamp(throttle + steering,
+                      -RC_MAX_DUTY, RC_MAX_DUTY);
+
+    /* Independent left/right motor control */
+    Motor_Drive((int8_t)left, (int8_t)right);
 }
 void RC_SetCommand(int8_t throttle,int8_t steering)
 {
@@ -70,6 +69,7 @@ void RC_LoRa_Process(void)
         tx[5]=(uint8_t)desired_throttle;tx[6]=(uint8_t)desired_steering;
         tx[7]=0; /* reserved flags */
         tx[11]=crc8(tx,11);
+        printf("TX T=%d S=%d\r\n", desired_throttle, desired_steering); // DEBUG
         (void)SX1276_SendPacket(tx,sizeof(tx),RC_TX_TIMEOUT_MS);
         seq++;
     }
@@ -84,6 +84,7 @@ void RC_LoRa_Process(void)
            (!seen_seq || (int16_t)(s-last_seq)>0)) {
             seen_seq=1;last_seq=s;
             last_valid_ms=HAL_GetTick();link_active=1;
+            printf("RX seq=%u T=%d S=%d\r\n", (unsigned)s, throttle, steering); // DEBUG
             apply_motor(throttle,steering);
         }
     }

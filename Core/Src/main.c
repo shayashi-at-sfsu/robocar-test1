@@ -131,6 +131,7 @@ int main(void)
   printf("TIM6 started\r\n");
 #else
   Motor_Init();
+  printf("Motor initialized\r\n");
 #endif
 
   RC_LoRa_Init();
@@ -144,32 +145,23 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 #if RC_CONTROLLER
   Joystick_Data_t joystick;
-  uint32_t lastPrint = 0;
-  HAL_StatusTypeDef status;
-
-  while (1)
-  {
-	    printf("Reading ADC...\r\n");
-
-	    status = Joystick_Read(&joystick);
-
-	    if (status == HAL_OK)
-	    {
-	        printf("X=%u Y=%u\r\n",
-	               joystick.x_raw,
-	               joystick.y_raw);
-	    }
-	    else
-	    {
-	        printf("Joystick_Read FAILED: %d\r\n", status);
-	        printf("ADC Error: 0x%08lX\r\n",
-	               (unsigned long)HAL_ADC_GetError(&hadc1));
-	    }
-#else
-  while (1)
-  {
-	  RC_LoRa_Process();
 #endif
+
+  while (1)
+  {
+#if RC_CONTROLLER
+	  if (Joystick_Read(&joystick) == HAL_OK)
+	  {
+		  RC_SetCommand(
+				  joystick.throttle,
+				  joystick.steering);
+	  }
+	  else
+	  {
+		  RC_SetCommand(0, 0);
+	  }
+#endif
+	  RC_LoRa_Process();
 
     /* USER CODE END WHILE */
 
